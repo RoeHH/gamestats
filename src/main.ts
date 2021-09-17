@@ -32,7 +32,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 
-
 //light
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(ambientLight);
