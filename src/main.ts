@@ -10,8 +10,17 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(0, 8, 30);
-camera.lookAt(0, 0, 0);
+
+setCamEagleView(11);
+function setCamEagleView(x:number) {
+  camera.position.set(-12, x, x * 2);
+  camera.setViewOffset( window.innerWidth, window.innerHeight, 0, 0, window.innerWidth, window.innerHeight );
+}
+function setCamGoalView() {
+  camera.position.set(0, 5, 10);
+  camera.setViewOffset( window.innerWidth, window.innerHeight, 0, -180, window.innerWidth, window.innerHeight );
+}
+
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#background"),
@@ -19,7 +28,8 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(30);
+
+
 
 
 
@@ -50,24 +60,40 @@ scene.add(kreis);
 
 //line
 const lineG = new THREE.BoxGeometry(10, 0.08, 0.08);
-const lineM = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const lineM = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const line = new THREE.Mesh(lineG, lineM);
 scene.add(line);
 
 //goal
-const goalG = new THREE.BoxGeometry(4, 2, 1);
-const goalM = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
-const goal = new THREE.Mesh(goalG, goalM);
-goal.position.y = 1;
-goal.position.z = -0.5;
-scene.add(goal);
+const goalM = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+const goal:any [] = Array();
+const late = new THREE.Mesh(new THREE.BoxGeometry(3, 0.2, 0.2), goalM);
+late.position.y = 1.5;
+late.position.z = -0.1;
+goal[goal.length + 1] = late;
+const s1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 0.2), goalM);
+s1.position.y = 0.75;
+s1.position.x = 1.4;
+s1.position.z = -0.1;
+goal[goal.length + 1] = s1;
+const s2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 0.2), goalM);
+s2.position.y = 0.75;
+s2.position.x = -1.4;
+s2.position.z = -0.1;
+goal[goal.length + 1] = s2;
+
+for (const mesh of goal) {
+  scene.add(mesh);
+}
+
+
 
 //helper
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const gridHelper = new THREE.GridHelper(200, 100);
-scene.add(gridHelper);
+//const gridHelper = new THREE.GridHelper(50, 100);
+//scene.add(gridHelper);
 function animate() {
   requestAnimationFrame(animate);
 
@@ -75,6 +101,8 @@ function animate() {
   camera.aspect = window.innerWidth / window.innerHeight;
 
   controls.update();
+  //console.log(camera);
+  
 
   renderer.render(scene, camera);
 }
